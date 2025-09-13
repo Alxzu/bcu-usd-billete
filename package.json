@@ -1,19 +1,89 @@
 {
   "name": "bcu-usd-billete",
-  "version": "1.1.0",
-  "description": "API para consultar DÓLAR USA billete del BCU por fecha + último cierre (Docker incluido)",
-  "main": "server.js",
+  "version": "2.0.0",
+  "description": "Node.js API for querying USD exchange rates from BCU (Central Bank of Uruguay) with Docker support",
+  "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "start": "node server.js",
-    "dev": "NODE_ENV=development node server.js"
+    "start": "node src/index.js",
+    "dev": "NODE_ENV=development node --watch src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "format:src": "prettier --write src/**/*.js",
+    "lint": "eslint src/**/*.js",
+    "lint:fix": "eslint src/**/*.js --fix",
+    "clean": "rm -rf node_modules package-lock.json",
+    "reinstall": "npm run clean && npm install",
+    "security:audit": "npm audit",
+    "security:fix": "npm audit fix",
+    "outdated": "npm outdated",
+    "docker:build": "docker build -t bcu-usd-billete:latest .",
+    "docker:run": "docker run --rm -p 3000:3000 bcu-usd-billete:latest",
+    "docker:dev": "docker run --rm -p 3000:3000 -e NODE_ENV=development bcu-usd-billete:latest"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
   },
+  "keywords": [
+    "bcu",
+    "banco-central-uruguay",
+    "exchange-rate",
+    "usd",
+    "dollar",
+    "currency",
+    "soap",
+    "rest-api",
+    "nodejs",
+    "express",
+    "docker",
+    "microservice",
+    "financial"
+  ],
+  "author": {
+    "name": "BCU USD API Team",
+    "url": "https://github.com/your-org/bcu-usd-billete"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/your-org/bcu-usd-billete.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-org/bcu-usd-billete/issues"
+  },
+  "homepage": "https://github.com/your-org/bcu-usd-billete#readme",
+  "funding": {
+    "type": "opencollective",
+    "url": "https://opencollective.com/bcu-usd-billete"
+  },
+  "files": [
+    "src/",
+    "package.json",
+    "package-lock.json",
+    "README.md",
+    "CLAUDE.md",
+    "Dockerfile",
+    ".dockerignore"
+  ],
   "dependencies": {
-    "dayjs": "^1.11.11",
-    "express": "^4.19.2",
-    "soap": "^1.0.3"
-  }
+    "dayjs": "^1.11.18",
+    "express": "^5.1.0",
+    "soap": "^1.3.0"
+  },
+  "devDependencies": {
+    "eslint": "^9.35.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-node": "^11.1.0",
+    "prettier": "^3.6.2"
+  },
+  "peerDependencies": {},
+  "optionalDependencies": {},
+  "overrides": {},
+  "volta": {
+    "node": "20.18.0",
+    "npm": "10.8.2"
+  },
+  "packageManager": "npm@10.8.2"
 }
