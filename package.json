@@ -1,0 +1,19 @@
+{
+  "name": "bcu-usd-billete",
+  "version": "1.1.0",
+  "description": "API para consultar DÓLAR USA billete del BCU por fecha + último cierre (Docker incluido)",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "NODE_ENV=development node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "dayjs": "^1.11.11",
+    "express": "^4.19.2",
+    "soap": "^1.0.3"
+  }
+}
