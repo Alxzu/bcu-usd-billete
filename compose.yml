@@ -1,0 +1,62 @@
+# Docker Compose configuration for BCU USD Exchange Rate API
+# Optimized for Portainer stack deployment from Git repository
+version: '3.8'
+
+services:
+  bcu-usd-api:
+    build: .
+    image: bcu-usd-billete:latest
+    container_name: bcu-usd-api
+    restart: unless-stopped
+    
+    # Environment configuration
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    
+    # Port mapping - adjust the host port as needed
+    ports:
+      - "3000:3000"  # Change left side to avoid conflicts (e.g., "8080:3000")
+    
+    # Health check configuration
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) }).on('error', () => process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    
+    # Resource limits (adjust based on your server capacity)
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.5'
+        reservations:
+          memory: 128M
+          cpus: '0.25'
+    
+    # Logging configuration
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    
+    # Security options
+    security_opt:
+      - no-new-privileges:true
+    read_only: false
+    
+    # Labels for better organization in Portainer
+    labels:
+      - "traefik.enable=false"  # Set to true if using Traefik reverse proxy
+      - "com.example.description=BCU USD Exchange Rate API"
+      - "com.example.service=bcu-usd-api"
+      - "com.example.version=2.0.0"
+
+# Optional: Add a network for isolation
+networks:
+  default:
+    name: bcu-usd-network
+    driver: bridge
