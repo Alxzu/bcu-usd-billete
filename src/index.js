@@ -22,6 +22,9 @@ import {
 import healthRoutes from './routes/health.js';
 import exchangeRateRoutes from './routes/exchange-rates.js';
 import legacyRoutes from './routes/legacy.js';
+// API v2 routes
+import currenciesRoutes from './routes/currencies.js';
+import ratesRoutes from './routes/rates.js';
 
 /**
  * Create and configure Express application
@@ -42,6 +45,9 @@ export function createApp() {
   app.use('/', healthRoutes);
   app.use('/', exchangeRateRoutes);
   app.use('/', legacyRoutes);
+  // API v2 routes
+  app.use('/', currenciesRoutes);
+  app.use('/', ratesRoutes);
 
   // Apply error handling middleware (must be last)
   app.use(notFoundMiddleware);
@@ -72,6 +78,13 @@ export function startServer(app) {
       logger.info('  GET /health/detailed');
       logger.info('  GET /usd-rate?date=YYYY-MM-DD');
       logger.info('  GET /usd-rate/latest');
+      logger.info('API v2 endpoints (multi-currency):');
+      logger.info('  GET /api/v2/currencies');
+      logger.info('  GET /api/v2/rates/:currency?date=YYYY-MM-DD');
+      logger.info('  GET /api/v2/rates/:currency/latest');
+      logger.info('  GET /api/v2/rates/:currency/history?from=...&to=...');
+      logger.info('  GET /api/v2/rates?currencies=usd-cash,eur&date=...');
+      logger.info('  GET /api/v2/rates/latest?currencies=usd-cash,eur');
       logger.info('Legacy endpoints (deprecated):');
       logger.info(
         '  GET /usd-billete?date=YYYY-MM-DD → redirects to /usd-rate'
