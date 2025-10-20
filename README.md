@@ -1,14 +1,19 @@
-# BCU USD Exchange Rate API
+# BCU Multi-Currency Exchange Rate API
 
-Modern Node.js REST API for querying **USD exchange rates** from BCU (Central Bank of Uruguay) by specific date and for the **latest closing** available. Built with best practices, modular architecture, and Docker support.
+Modern Node.js REST API for querying **exchange rates for multiple currencies** (USD, EUR, ARS, BRL, and more) from BCU (Central Bank of Uruguay). Built with best practices, modular architecture, and Docker support.
 
 ## 🚀 Features
 
+- ✅ **Multi-Currency Support**: Query USD, EUR, ARS, BRL, and all BCU-provided currencies
+- ✅ **Modern API v2**: RESTful design with comprehensive multi-currency endpoints
+- ✅ **Bulk Queries**: Get multiple currencies in a single request
+- ✅ **Historical Data**: Query date ranges for trend analysis
+- ✅ **Currency Discovery**: Auto-discover available currencies from BCU
+- ✅ **Backward Compatible**: Legacy USD-only endpoints still supported
 - ✅ **Modern Architecture**: Modular design with clean separation of concerns
-- ✅ **Multiple Endpoints**: Query by date or get latest rates with fallback logic
 - ✅ **Health Checks**: Built-in monitoring endpoints for system health
 - ✅ **Docker Ready**: Containerized deployment with optimized image
-- ✅ **Code Quality**: Prettier formatting and consistent code style
+- ✅ **Code Quality**: Prettier & ESLint for consistent code style
 - ✅ **Error Handling**: Comprehensive error responses with proper HTTP status codes
 - ✅ **CORS Enabled**: Ready for web application integration
 - ✅ **Structured Logging**: Environment-aware logging with multiple levels
@@ -53,7 +58,29 @@ docker run --rm -p 8080:3000 -e PORT=3000 bcu-usd-billete:latest
 
 ## 📡 API Endpoints
 
-### Modern Endpoints (v2.0)
+### API v2 (Multi-Currency)
+
+#### Currency Discovery
+| Method | Endpoint                                  | Description                           |
+| ------ | ----------------------------------------- | ------------------------------------- |
+| `GET`  | `/api/v2/currencies?group=local`          | List all local market currencies      |
+| `GET`  | `/api/v2/currencies?group=international`  | List all international currencies     |
+| `GET`  | `/api/v2/currencies?group=all`            | List all available currencies         |
+
+#### Exchange Rates
+| Method | Endpoint                                         | Description                                    |
+| ------ | ------------------------------------------------ | ---------------------------------------------- |
+| `GET`  | `/api/v2/rates/:currency?date=YYYY-MM-DD`        | Get rate for specific currency and date        |
+| `GET`  | `/api/v2/rates/:currency/latest`                 | Get latest rate for specific currency          |
+| `GET`  | `/api/v2/rates/:currency/history?from=...&to=...`| Get historical rates for date range (max 365d) |
+| `GET`  | `/api/v2/rates?currencies=slug1,slug2&date=...`  | Get multiple currencies at once                |
+| `GET`  | `/api/v2/rates/latest?currencies=slug1,slug2`    | Get latest rates for multiple currencies       |
+
+**Available Currency Slugs:**
+- Local: `usd-cash`, `usd-wire`, `usd-average`, `ars-cash`, `brl-cash`, `ur`, `ui`, `up`
+- International: `usd`, `eur`, `ars`, `brl`, `gbp`, `jpy`, `chf`
+
+### Legacy Endpoints (v1)
 
 | Method | Endpoint                    | Description                              |
 | ------ | --------------------------- | ---------------------------------------- |
@@ -62,7 +89,7 @@ docker run --rm -p 8080:3000 -e PORT=3000 bcu-usd-billete:latest
 | `GET`  | `/health`                   | Basic health check                       |
 | `GET`  | `/health/detailed`          | Detailed system health information       |
 
-### Legacy Endpoints (Deprecated)
+### Deprecated Endpoints
 
 | Method | Endpoint                       | Description                                |
 | ------ | ------------------------------ | ------------------------------------------ |
@@ -70,6 +97,29 @@ docker run --rm -p 8080:3000 -e PORT=3000 bcu-usd-billete:latest
 | `GET`  | `/usd-billete/latest`          | ↳ Redirects to `/usd-rate/latest`          |
 
 ### Example Usage
+
+#### API v2 (Multi-Currency)
+
+```bash
+# Discover available currencies
+curl "http://localhost:3000/api/v2/currencies?group=local"
+curl "http://localhost:3000/api/v2/currencies?group=international"
+
+# Get specific currency rate
+curl "http://localhost:3000/api/v2/rates/usd-cash?date=2025-09-12"
+curl "http://localhost:3000/api/v2/rates/eur?date=2025-09-12"
+curl "http://localhost:3000/api/v2/rates/ars-cash/latest"
+
+# Get multiple currencies at once
+curl "http://localhost:3000/api/v2/rates?currencies=usd-cash,eur,ars&date=2025-09-12"
+curl "http://localhost:3000/api/v2/rates/latest?currencies=usd-cash,eur,brl"
+
+# Get historical data (date range)
+curl "http://localhost:3000/api/v2/rates/usd-cash/history?from=2025-09-01&to=2025-09-30"
+curl "http://localhost:3000/api/v2/rates/eur/history?from=2025-10-01&to=2025-10-15"
+```
+
+#### Legacy v1 Endpoints (Still Supported)
 
 ```bash
 # Query rate for specific date
@@ -81,10 +131,6 @@ curl "http://localhost:3000/usd-rate/latest"
 # Health checks
 curl "http://localhost:3000/health"
 curl "http://localhost:3000/health/detailed"
-
-# Legacy endpoints (will redirect)
-curl "http://localhost:3000/usd-billete?date=2025-09-12"
-curl "http://localhost:3000/usd-billete/latest"
 ```
 
 ## 📁 Project Structure
@@ -272,11 +318,23 @@ MIT License - see LICENSE file for details.
 
 ## 🛠️ Changelog
 
+### v2.1.0 (API v2 - Multi-Currency Support)
+
+- ✨ **NEW**: Multi-currency API v2 supporting USD, EUR, ARS, BRL, and more
+- ✨ **NEW**: Currency discovery endpoint (`/api/v2/currencies`)
+- ✨ **NEW**: Bulk currency queries (get multiple currencies in one request)
+- ✨ **NEW**: Historical data endpoint (date range queries)
+- ✨ **NEW**: Support for both local and international currency groups
+- ✨ Enhanced service layer with generic currency functions
+- ✨ Currency mapping system with slugs (e.g., `usd-cash`, `eur`)
+- ✅ Full backward compatibility with v1 endpoints
+- 📚 Comprehensive API documentation
+
 ### v2.0.0
 
 - ✨ Complete architecture refactor to modular design
 - ✨ Added health check endpoints
-- ✨ Integrated Prettier for code formatting
+- ✨ Integrated Prettier and ESLint for code quality
 - ✨ Modern ES modules and Node.js 20+ support
 - ✨ Enhanced error handling and logging
 - ✨ Docker optimization and security improvements
